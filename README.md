@@ -11,8 +11,22 @@ TODO
 Usage
 -----
 
-`$ ./bin/console class-author-stat <projectDir> <developerEmail>` - counts classes/interfaces/trait
+`$ ./bin/console command-name <fullClassName>` - counts classes/interfaces/trait
 created by some developer in project.
+
+Output
+------
+
+Class: {{class_name}} is {{class_type}}
+Properties:
+    public: {{count}} ({{count}} static)
+    protected: {{count}} ({{count}} static)
+    private: {{count}}
+Methods:
+    public: {{count}} ({{count}} static)
+    protected: {{count}}
+    private: {{count}} ({{count}} static)
+    
 
 Code style fixer
 ----------------
