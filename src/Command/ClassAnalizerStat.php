@@ -33,7 +33,6 @@ class ClassAnalizerStat extends Command
     }
 
     /**
-     *
      * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -42,13 +41,10 @@ class ClassAnalizerStat extends Command
 
         $analyzer = new ClassPropMethAnalyzer($className);
         $res_analyze = $analyzer->analyze();
-        //var_dump($res_analyze[0]);die();
-        //var_dump(sizeof($res_analyze[0]->getModifier()[0]));die();
         $section = $output->section();
         $section->writeln(\sprintf(
         '<info>Class: %s is %s </info>',
         $className,
-        //$res_analyze['classtype']
         $res_analyze[0]->class_type
     ));
         $section->writeln('<info>Properties:</info>');
@@ -56,7 +52,6 @@ class ClassAnalizerStat extends Command
         '<info>    public: %d %s
     protected: %d %s
     private: %d </info>',
-        //count($res_analyze['propeties']['public']),
             \sizeof($res_analyze[0]->getModifier()[0]),
         (($res_analyze[0]->getStaticMod()[0]) ? '('.\sizeof($res_analyze[0]->getStaticMod()[0]).' static)' : ''),
         \sizeof($res_analyze[0]->getModifier()[1]),

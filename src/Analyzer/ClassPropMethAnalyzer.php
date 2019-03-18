@@ -8,10 +8,9 @@ use Symfony\Component\Finder\Finder;
 
 final class ClassPropMethAnalyzer
 {
-    private $className;
-    public $propeties_methods = [];
     public $propeties;
     public $methods;
+    public $class_type;
     protected $public_modifier;
     protected $protected_modifier;
     protected $private_modifier;
@@ -23,7 +22,7 @@ final class ClassPropMethAnalyzer
     protected $pub_static;
     protected $prot_static;
     protected $priv_static;
-    public $class_type;
+    private $className;
 
 
     public function __construct(string $className)
