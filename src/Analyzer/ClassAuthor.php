@@ -28,7 +28,7 @@ final class ClassAuthor
             ->name('/^[A-Z].+\.php$/')
         ;
 
-        $docBlockFactory =  DocBlockFactory::createInstance();
+        $docBlockFactory = DocBlockFactory::createInstance();
 
         $counter = 0;
 
