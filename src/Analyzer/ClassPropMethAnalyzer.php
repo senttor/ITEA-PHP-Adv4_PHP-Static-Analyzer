@@ -10,13 +10,30 @@ final class ClassPropMethAnalyzer
 {
     private $className;
     public $propeties_methods = [];
-    public static $xxx;
-    private static $yyy;
-    private static $zzz;
+    public $propeties;
+    public $methods;
+    protected $public_modifier;
+    protected $protected_modifier;
+    protected $private_modifier;
+    protected $static_modifier;
+    protected $is_public;
+    protected $is_protected;
+    protected $is_private;
+    protected $is_static;
+    protected $pub_static;
+    protected $prot_static;
+    protected $priv_static;
+    public $class_type;
+
 
     public function __construct(string $className)
     {
         $this->className = $className;
+        $this->is_public = \ReflectionMethod::IS_PUBLIC;
+        $this->is_protected = \ReflectionMethod::IS_PROTECTED;
+        $this->is_private = \ReflectionMethod::IS_PRIVATE;
+        $this->is_static = \ReflectionMethod::IS_STATIC;
+
     }
 
     /**
@@ -28,12 +45,15 @@ final class ClassPropMethAnalyzer
      */
     public function analyze(): array
     {
+        $propeties = new ClassPropMethAnalyzer($this->className);
+        $methods = new ClassPropMethAnalyzer($this->className);
         $finder = Finder::create()
             ->in(__DIR__.'/..')
             ->files()
             ->name('/^'.$this->className.'.php$/');
 
         // $counter = 0;
+
 
         foreach ($finder as $file) {
             $namespace = PhpClassInfo::getFullClassName($file->getPathname());
@@ -45,32 +65,51 @@ final class ClassPropMethAnalyzer
             }
             //Get type class
             if ($reflector->isAbstract()) {
-                $propeties_methods['classtype'] = 'absract';
+                $propeties->class_type = 'absract';
             } elseif ($reflector->isFinal()) {
-                $propeties_methods['classtype'] = 'final';
+                $propeties->class_type = 'final';
             } else {
-                $propeties_methods['classtype'] = 'default';
+                $propeties->class_type = 'default';
             }
-           //Check propeties accessibility modifiers for current instance
-            $propeties_methods['propeties']['public'] = $reflector->getProperties(\ReflectionMethod::IS_PUBLIC) ?? null;
-            $propeties_methods['propeties']['protected'] = $reflector->getProperties(\ReflectionMethod::IS_PROTECTED) ?? null;
-            $propeties_methods['propeties']['static'] = $reflector->getProperties(\ReflectionMethod::IS_STATIC) ?? null;
-            $propeties_methods['propeties']['private'] = $reflector->getProperties(\ReflectionMethod::IS_PRIVATE) ?? null;
+            $propeties->setPropetyModifier($reflector);
+            $methods->setMethodsModifier($reflector);
 
-          //Check methods accessibility modifiers for current instance
-            $propeties_methods['methods']['public'] = $reflector->getMethods(\ReflectionMethod::IS_PUBLIC) ?? null;
-            $propeties_methods['methods']['static'] = $reflector->getMethods(\ReflectionMethod::IS_STATIC) ?? null;
-            $propeties_methods['methods']['protected'] = $reflector->getMethods(\ReflectionMethod::IS_PROTECTED) ?? null;
-            $propeties_methods['methods']['private'] = $reflector->getMethods(\ReflectionMethod::IS_PRIVATE) ?? null;
         }
 
-        //Determine the use of a static modifier
-        $propeties_methods['propeties']['pub_static'] = \array_intersect($propeties_methods['propeties']['static'], $propeties_methods['propeties']['public']);
-        $propeties_methods['propeties']['prot_static'] = \array_intersect($propeties_methods['propeties']['static'], $propeties_methods['propeties']['protected']);
+           $propeties->setStaticMod();
+           $methods->setStaticMod();
 
-        $propeties_methods['methods']['pub_static'] = \array_intersect($propeties_methods['methods']['static'], $propeties_methods['methods']['public']);
-        $propeties_methods['methods']['priv_static'] = \array_intersect($propeties_methods['methods']['static'], $propeties_methods['methods']['private']);
+        return array($propeties, $methods);
+    }
+    public function setPropetyModifier( \ReflectionClass $obj): void
+    {
+        $this->public_modifier  = $obj->getProperties($this->is_public) ?? null;
+        $this->protected_modifier  = $obj->getProperties($this->is_protected) ?? null;
+        $this->static_modifier  = $obj->getProperties($this->is_static) ?? null;
+        $this->private_modifier  = $obj->getProperties($this->is_private) ?? null;
+    }
+    public function setMethodsModifier(\ReflectionClass $obj): void
+    {
+        $this->public_modifier  = $obj->getMethods($this->is_public) ?? null;
+        $this->protected_modifier  = $obj->getMethods($this->is_protected) ?? null;
+        $this->static_modifier  = $obj->getMethods($this->is_static) ?? null;
+        $this->private_modifier  = $obj->getMethods($this->is_private) ?? null;
+    }
 
-        return $propeties_methods;
+    public function setStaticMod()
+    {
+        $this->pub_static = \array_intersect($this->static_modifier, $this->public_modifier);
+        $this->prot_static = \array_intersect($this->static_modifier, $this->protected_modifier);
+        $this->priv_static = \array_intersect($this->static_modifier, $this->private_modifier);
+    }
+
+    public function getModifier()
+    {
+        return  array($this->public_modifier, $this->protected_modifier, $this->static_modifier, $this->private_modifier);
+    }
+
+    public function getStaticMod()
+    {
+        return array($this->pub_static, $this->prot_static, $this->priv_static);
     }
 }
