@@ -46,21 +46,14 @@ final class ClassPropMethAnalyzer
     {
         $propeties = new ClassPropMethAnalyzer($this->className);
         $methods = new ClassPropMethAnalyzer($this->className);
-        $finder = Finder::create()
-            ->in(__DIR__.'/..')
-            ->files()
-            ->name('/^'.$this->className.'.php$/');
-
-        // $counter = 0;
 
 
-        foreach ($finder as $file) {
-            $namespace = PhpClassInfo::getFullClassName($file->getPathname());
+            $namespace = PhpClassInfo::getFullClassName(__DIR__."/".$this->className.".php");
 
             try {
                 $reflector = new \ReflectionClass($namespace);
             } catch (\ReflectionException $e) {
-                continue;
+              
             }
             //Get type class
             if ($reflector->isAbstract()) {
@@ -73,10 +66,8 @@ final class ClassPropMethAnalyzer
             $propeties->setPropetyModifier($reflector);
             $methods->setMethodsModifier($reflector);
 
-        }
-
-           $propeties->setStaticMod();
-           $methods->setStaticMod();
+            $propeties->setStaticMod();
+            $methods->setStaticMod();
 
         return array($propeties, $methods);
     }
