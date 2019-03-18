@@ -5,13 +5,7 @@ namespace Greeflas\StaticAnalyzer\Analyzer;
 use Greeflas\StaticAnalyzer\PhpClassInfo;
 use Symfony\Component\Finder\Finder;
 
-/**
- *
- * @author oksentiuk viktor
- * Class ClassPropMethAnalyzer
- * @package Greeflas\StaticAnalyzer\Analyz
- *
- */
+
 final class ClassPropMethAnalyzer
 {
     private $className;

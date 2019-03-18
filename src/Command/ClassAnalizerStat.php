@@ -2,12 +2,6 @@
 
 namespace Greeflas\StaticAnalyzer\Command;
 
-/*use Symfony\Component\Console{
-    Command\Command,
-    Input\InputArgument,
-    Input\InputInterface,
-    Output\OutputInterface,
-};*/
 
 use Greeflas\StaticAnalyzer\Analyzer\ClassPropMethAnalyzer;
 use Symfony\Component\Console\Command\Command;
